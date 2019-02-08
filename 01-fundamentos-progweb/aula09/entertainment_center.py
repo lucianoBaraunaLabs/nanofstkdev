@@ -37,6 +37,7 @@ midnight_in_paris = media.Movie("Avengers: Infinity War",
 
 movies = [toy_story, avatar, avenger_infintywar, school_of_rock, ratatouille, midnight_in_paris]
 
-print midnight_in_paris.__name__
+print (media.Movie.valid_ratings)
+print (media.Movie.__doc__)
 
 # fresh_tomatoes.open_movies_page(movies)
