@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import webbrowser
 
-class Movie(object):
+class Movie():
     # Init é o construtor da classe.
     # O argumento self significa a própria classe o famoso this no JS.
     def __init__(self, movie_title, movie_storyline, poster_image, 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import media
+import fresh_tomatoes
 
 # Instancia de variábel toy_story
 toy_story = media.Movie("Toy Story",
@@ -34,3 +35,8 @@ midnight_in_paris = media.Movie("Avengers: Infinity War",
                     "https://upload.wikimedia.org/wikipedia/en/9/9f/Midnight_in_Paris_Poster.jpg",
                     "https://www.youtube.com/watch?v=FAfR8omt-CY")
 
+movies = [toy_story, avatar, avenger_infintywar, school_of_rock, ratatouille, midnight_in_paris]
+
+print midnight_in_paris.__name__
+
+# fresh_tomatoes.open_movies_page(movies)
