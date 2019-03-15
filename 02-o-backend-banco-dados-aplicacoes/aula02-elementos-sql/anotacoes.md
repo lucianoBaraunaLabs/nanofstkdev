@@ -171,57 +171,41 @@ nascido entre 01/01/1995 e até 31/12/1998
 select * from animals where species = 'llama' and (birthdate >= '1995-01-01') and (birthdate <= '1998-12-31')
 ```
 
-## Cláusulas Select
+## Declarações 
 
-Aqui estão as novas cláusulas select:
+### Select
+A forma mais básica de declaração select é a seleção de um só valor escalar:
 
-`... limit count`
-Retorna apenas as primeiras linhas count da tabela resultante.
-
-`... limit count offset skip`
-Retorna linhas count começando após as primeiras linhas skip.
-
-`... order by columns`
-`... order by columns desc`
-Classifique as linhas usando as columns/colunas (uma ou mais, separadas por vírgulas) como a chave de classificação. Colunas numéricas serão classificadas em ordem numérica; colunas string em ordem alfabética. Com desc, a ordem é inversa (desc-ending order).
-
-`... group by columns`
-Altera o comportamento de agregações como max, count, e sum. Com group by, a agregação irá retornar uma linha para cada valor distinto em columns.
-
-## Algumas querys
-
-Selecionando todos os animais onde as espécies tem que possuir o valor de gorila e 
-são ordenadas pela data de nascimento
 ```
-select * from animals where species = 'gorilla' order by birthdate limit 10;
+select 2 + 2 ;
+```
+Também podemos selecionar uma ou mais colunas de uma tabela, o que é mais útil. 
+Sem restrições, isso retornará todas as linhas da tabela:
+```
+select name, species from animals ;
 ```
 
-Selecionando todos os animais colocando em ordem de nome e paginando de  10 em 10
+As colunas são separadas por vírgulas, use * para selecionar todas as colunas das tabelas:
 ```
-select * from animals order by name limit 10 offset 0;
+select * from animals;
 ```
 
-Selecionando todas as espécies e realizando a contagem transformando em um outro
-agrupamento ordenado em ordem decrescente.
-```
-select species, count(*) as total from animals group by species order by total desc;
-```
-## Cláusulas Select
+Muito frequentemente, não queremos todos os dados de uma tabela. Podemos restringir as linhas usando diversas cláusulas de seleção, listadas abaixo. Há, também, diversas funções que podem ser aplicadas a colunas, incluindo funções de agregação que operam nos valores de diversas linhas, como max e count.
 
-`where`
+### `where`
 
 A cláusula where expressa restrições — filtrando uma tabela por linhas que seguem uma regra em particular. where dá suporte a igualdades, desigualdades e operadores booleanos (dentre outras coisas):
 - where species = 'gorilla' — retorna apenas linhas que têm 'gorilla' como o valor da coluna species.
 - where name >= 'George' — retorna apenas linhas cujo valor da coluna nomes vem alfabeticamente depois de 'George'.
 - where species != 'gorilla' and name != 'George' — retorna apenas linhas onde a espécie não é 'gorilla' e o nome não é 'George'.
 
-`limit / offset`
+### `limit / offset`
 
 A cláusula `limit` define uma quantidade máxima de linhas que devem constar na tabela de resultados. 
 
 A cláusula opcional `offset` diz quantas linhas devem ser ignoradas antes do primeiro resultado. Assim, `limit 10 offset 100` retornará 10 resultados começando com o 101°.
 
-`order by`
+### `order by`
 
 A cláusula `order by` informa ao banco de dados como classificar os resultados — geralmente de acordo com uma ou mais colunas. Então `order by species, name` diz para classificar os resultados primeiro pela coluna de espécies, e então por nome dentro de cada espécie.
 
@@ -230,7 +214,7 @@ A ordenação acontece antes do `limite/offset`, então você pode usá-los junt
 
 O modificador opcional `desc` diz ao banco de dados para ordenar os resultados em ordem descendente — como de números grandes a pequenos, ou de Z a A.
 
-`group by`
+### `group by`
 
 A cláusula `group by` só é usada com agregações, como `max` ou `sum`. Sem uma cláusula `group by`, uma declaração select com uma agregação vai agregar todas as linhas selecionadas, retornando apenas uma linha. Com a cláusula `group by`, ela retornará uma linha para cada valor distinto da coluna ou expressão na cláusula `group by`.
 
@@ -267,18 +251,32 @@ select count(*) as num, species from animals group by species order by num desc
 +-----+------------+
 ```
 
-## Inserção
-Para inserimos um valor na tabela, basta utilizar a seguinte sintaxe e respeitar
-a ordem dos argumentos segundo a ordem das colunas.
+### Having
+A cláusula `having` funciona como a cláusula `where`, mas é aplicada depois que as 
+agregações `group by` acontecem. Segue um exemplo:
 
 ```
--- ordem dos argumentos: Nome do animal, espécie, data de nascimento.
-
-insert into animals('juju', 'gamba', '2017-05-01');
+select col1, sum(col2) as total
+    from table
+    group by col1
+    having total > 500 ;
 ```
 
-## Join
-Para jutar uma tabela a outra usamos o operado `join` e passamos as tabelas. E apartir do operador
+Geralmente, pelo menos uma das colunas será uma função agregada, como count, max ou sum, em uma das colunas das tabelas. A fim de aplicar having a uma coluna agregada, você dará um nome a ela, usando `as`.
+
+Por exemplo, se você tiver uma tabela com os itens vendidos em uma loja e quiser saber quais itens tiveram mais de cinco unidades vendidas, pode usar:
+
+```
+select name, count(*) as num from sales having num > 5;
+```
+
+Você pode ter uma declaração select que usa somente where, ou somente group by, ou group by e having, ou where e group by, ou todas as três! Porém, geralmente, não faz sentido se usado sem group by.
+
+Se você usar tanto `where` como `having`, a condição `where` filtrará as linhas que estão entrando na agregação, e a condição having filtrará as linhas que estão saindo dela.
+
+
+### Join
+Para jutar uma tabela a outra usamos o operador `join` e passamos as tabelas. E apartir do operador
 `on` passamos as regras dessa junção
 
 ```
@@ -305,4 +303,41 @@ select * from animals, diet where animals.species = diet.species and diet.food =
 |   Simon |   sea lion | 2000-12-16 |   sea lion | fish |
 |     Zoe |   sea lion | 1991-05-19 |   sea lion | fish |
 +---------+------------+------------+------------+------+
+```
+
+## Inserção
+Para inserimos um valor na tabela, basta utilizar a seguinte sintaxe e respeitar
+a ordem dos argumentos segundo a ordem das colunas.
+
+```
+insert into tablename ( col1, col2, ... ) values ( val1, val2, ... );
+```
+
+Se os valores estão na mesma ordem que as colunas da tabela (começando pela primeira coluna), você não precisa especificar as colunas na declaração insert:
+
+```
+insert into tablename values ( val1, val2, ... );
+```
+
+Por exemplo, se uma tabela possui três colunas (a, b, c) e você deseja inserir em a e b, pode deixar de fora os nomes das colunas da declaração insert. Mas se você quiser inserir em b e c,ou a e c, você tem de especificar as colunas.
+
+Normalmente, uma única declaração insert pode inserir algo somente em uma tabela (diferentemente da declaração select, que pode retirar dados de várias tabelas usando uma join).
+
+## Algumas querys
+
+Selecionando todos os animais onde as espécies tem que possuir o valor de gorila e 
+são ordenadas pela data de nascimento
+```
+select * from animals where species = 'gorilla' order by birthdate limit 10;
+```
+
+Selecionando todos os animais colocando em ordem de nome e paginando de  10 em 10
+```
+select * from animals order by name limit 10 offset 0;
+```
+
+Selecionando todas as espécies e realizando a contagem transformando em um outro
+agrupamento ordenado em ordem decrescente.
+```
+select species, count(*) as total from animals group by species order by total desc;
 ```
