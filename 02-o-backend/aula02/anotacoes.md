@@ -1,4 +1,4 @@
-# Aula 02 - Falando com banco de dados.
+# Aula 02 - Elementos de Sql.
 
 Para trazermos algum resultado do banco de dados nós precisamos realizar uma consulta (query).
 

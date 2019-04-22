@@ -39,3 +39,4 @@ Aqui estão algumas seções na documentação do PostgreSQL que discutem outras
 [Subqueries escalares](https://www.postgresql.org/docs/9.4/sql-expressions.html#SQL-SYNTAX-SCALAR-SUBQUERIES)
 [Expressões de subqueries](https://www.postgresql.org/docs/9.4/functions-subquery.html)
 [Cláusula FROM](https://www.postgresql.org/docs/9.4/sql-select.html#SQL-FROM)
+z
